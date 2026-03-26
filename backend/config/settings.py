@@ -76,8 +76,10 @@ MIDDLEWARE = [
 ]
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = True
 
+#CORS_ALLOWED_ORIGINS = True
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'authorization',
