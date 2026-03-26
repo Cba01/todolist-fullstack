@@ -4,7 +4,7 @@ import { LoadingContext } from "../context/LoadingContext";
 
 // Configurar una instancia de axios con la URL base de la API
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 // Interceptor para agregar el token de acceso a las solicitudes(request) al API
