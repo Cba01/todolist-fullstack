@@ -1,1 +1,1 @@
-web: gunicorn todo_fullstack.wsgi
+web: gunicorn todo-fullstack.wsgi
