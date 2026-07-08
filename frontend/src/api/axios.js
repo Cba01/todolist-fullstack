@@ -17,7 +17,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Interceptor para manejar respuestas(response) de los requests que contengan errores
@@ -35,10 +35,9 @@ api.interceptors.response.use(
 
       // Intentar obtener un nuevo token de acceso usando el refreshToken
       try {
-        const res = await axios.post(
-          "http://127.0.0.1:8000/api/auth/refresh/",
-          { refresh: refreshToken }
-        );
+        const res = await api.post("auth/refresh/", {
+          refresh: refreshToken,
+        });
 
         // Guardar el nuevo token de acceso en el almacenamiento local
         localStorage.setItem("accessToken", res.data.access);
@@ -56,7 +55,7 @@ api.interceptors.response.use(
     }
     // Si el error no es de autenticación, rechazar la promesa con el error
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

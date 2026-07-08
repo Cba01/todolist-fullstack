@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { login as loginService, getMe } from "../auth/authService";
 
-
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -21,6 +20,11 @@ export function AuthProvider({ children }) {
 
       getMe()
         .then(setUser)
+        .catch(() => {
+          localStorage.clear();
+          setAccessToken(null);
+          setUser(null);
+        })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -31,12 +35,16 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     const data = await loginService(username, password);
     setAccessToken(data.access);
+
+    const me = await getMe();
+    setUser(me);
   };
 
   // Función para manejar el cierre de sesión
   const logout = () => {
     localStorage.clear();
     setAccessToken(null);
+    setUser(null);
   };
 
   // Proveer el estado y las funciones de autenticación a los componentes hijos
