@@ -29,33 +29,44 @@ const Navbar = () => {
           TodoApp
         </Link>
 
-        <div style={{ float: "right" }}>
-          {/* Si el usuario está autenticado, mostrar enlaces a Tareas y Logout; de lo contrario, mostrar enlace a Login */}
-          {isAuthenticated && user ? (
-            <>
-              <div className="flex items-center gap-4">
-                <Link to="/tasks">Tareas</Link>
-                <span className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center text-xs">
-                    {user.username[0].toUpperCase()}
-                  </div>
-                  {user.username}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm text-gray-600 hover:text-black transition"
-                >
-                  Logout
-                </button>
+        {/* Si el usuario está autenticado, mostrar enlaces a Tareas y Logout; de lo contrario, mostrar enlace a Login */}
+        {isAuthenticated && user ? (
+          <div className="flex items-center gap-5">
+            <Link
+              to="/tasks"
+              className="text-sm text-gray-600 hover:text-black transition"
+            >
+              Tareas
+            </Link>
+            <span className="flex items-center gap-2 text-sm text-gray-800">
+              <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center text-xs shrink-0">
+                {user.username[0].toUpperCase()}
               </div>
-            </>
-          ) : (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
-            </>
-          )}
-        </div>
+              {user.username}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="text-sm text-gray-600 hover:text-black transition"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <Link
+              to="/login"
+              className="text-sm text-gray-600 hover:text-black transition"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="text-sm bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition"
+            >
+              Registrarse
+            </Link>
+          </div>
+        )}
       </div>
     </motion.nav>
   );

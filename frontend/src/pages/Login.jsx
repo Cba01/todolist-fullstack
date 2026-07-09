@@ -1,16 +1,14 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
-  const { login } = useContext(AuthContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  const { isAuthenticated } = useContext(AuthContext);
 
   // Redirigir a la página de tareas si el usuario ya está autenticado
   useEffect(() => {
@@ -41,30 +39,52 @@ function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <div className="w-full max-w-sm mt-12 bg-white rounded-2xl shadow-md p-8">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-1">
+        Bienvenido de nuevo
+      </h2>
+      <p className="text-sm text-gray-500 mb-6">
+        Inicia sesión para ver tus tareas
+      </p>
 
-      <input
-        placeholder="Usuario"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
+          {error}
+        </p>
+      )}
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <input
+          placeholder="Usuario"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+        />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="text-sm text-gray-600 hover:text-black transition"
-      >
-        {loading ? "Ingresando..." : "Login"}
-      </button>
-    </form>
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Ingresando..." : "Ingresar"}
+        </button>
+      </form>
+
+      <p className="text-sm text-gray-500 mt-6 text-center">
+        ¿No tienes cuenta?{" "}
+        <Link to="/register" className="text-black font-medium hover:underline">
+          Regístrate
+        </Link>
+      </p>
+    </div>
   );
 }
 

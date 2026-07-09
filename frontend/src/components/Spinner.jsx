@@ -1,23 +1,9 @@
 function Spinner() {
   return (
-    <div style={overlayStyle}>
-      <div>Cargando...</div>
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+      <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
     </div>
   );
 }
-
-const overlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  background: "rgba(0,0,0,0.3)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "white",
-  fontSize: "20px",
-};
 
 export default Spinner;

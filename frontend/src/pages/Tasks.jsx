@@ -58,11 +58,18 @@ const Tasks = () => {
   };
 
   const handleEdit = async (id) => {
+    if (!editingTitle.trim()) return;
+
     const updated = await updateTask(id, { title: editingTitle });
     setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
 
     // Salir del modo edición
     setEditingId(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingTitle("");
   };
 
   const handleDelete = async (id) => {
@@ -71,7 +78,18 @@ const Tasks = () => {
     toast.success("Tarea eliminada");
   };
 
-  if (loading) return <p>Cargando tareas...</p>;
+  if (loading) {
+    return (
+      <div className="w-full max-w-md mt-12 bg-white rounded-2xl shadow-md p-8">
+        <div className="animate-pulse space-y-3">
+          <div className="h-6 w-32 bg-gray-200 rounded" />
+          <div className="h-10 bg-gray-100 rounded-lg" />
+          <div className="h-12 bg-gray-100 rounded-lg" />
+          <div className="h-12 bg-gray-100 rounded-lg" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -93,71 +111,92 @@ const Tasks = () => {
         </button>
       </form>
 
-      <AnimatePresence>
-        <ul className="space-y-3">
-          {/* Renderizar la lista de tareas */}
-          {tasks.map((task) => (
-            <motion.li
-              key={task.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 hover:shadow-sm transition"
-            >
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleToggle(task)}
-                className="mr-3 accent-black"
-              />
-
-              {/* Si la tarea está en modo edición, mostrar el input para editar; de lo contrario, mostrar el título y el botón de editar*/}
-              {editingId === task.id ? (
-                <>
-                  <input
-                    value={editingTitle}
-                    onChange={(e) => setEditingTitle(e.target.value)}
-                  />
-                  <button onClick={() => handleEdit(task.id)}>Guardar</button>
-                </>
-              ) : (
-                <>
-                  {/* Mostrar el título de la tarea con estilo condicional según si está completada */}
-                  <span
-                    className={`transition ${
-                      task.completed
-                        ? "line-through text-gray-400"
-                        : "text-gray-800"
-                    }`}
-                  >
-                    {task.title}
-                  </span>
-
-                  {/* Botón para activar el modo edición */}
-                  <button
-                    onClick={() => {
-                      setEditingId(task.id);
-                      setEditingTitle(task.title);
-                    }}
-                    className="text-sm text-blue-600 hover:underline mr-2"
-                  >
-                    Editar
-                  </button>
-                </>
-              )}
-
-              {/* Botón para eliminar la tarea */}
-              <button
-                onClick={() => handleDelete(task.id)}
-                className="text-sm text-red-500 hover:underline"
+      {tasks.length === 0 ? (
+        <EmptyState
+          title="No tienes tareas todavía"
+          description="Agrega tu primera tarea usando el campo de arriba."
+        />
+      ) : (
+        <AnimatePresence>
+          <ul className="space-y-3">
+            {/* Renderizar la lista de tareas */}
+            {tasks.map((task) => (
+              <motion.li
+                key={task.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 hover:shadow-sm transition"
               >
-                Eliminar
-              </button>
-            </motion.li>
-          ))}
-        </ul>
-      </AnimatePresence>
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => handleToggle(task)}
+                  className="accent-black shrink-0"
+                />
+
+                {/* Si la tarea está en modo edición, mostrar el input para editar; de lo contrario, mostrar el título y el botón de editar*/}
+                {editingId === task.id ? (
+                  <>
+                    <input
+                      autoFocus
+                      value={editingTitle}
+                      onChange={(e) => setEditingTitle(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleEdit(task.id)}
+                      className="flex-1 border border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                    <button
+                      onClick={() => handleEdit(task.id)}
+                      className="text-sm text-green-600 hover:underline shrink-0"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="text-sm text-gray-500 hover:underline shrink-0"
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {/* Mostrar el título de la tarea con estilo condicional según si está completada */}
+                    <span
+                      className={`flex-1 truncate transition ${
+                        task.completed
+                          ? "line-through text-gray-400"
+                          : "text-gray-800"
+                      }`}
+                    >
+                      {task.title}
+                    </span>
+
+                    {/* Botón para activar el modo edición */}
+                    <button
+                      onClick={() => {
+                        setEditingId(task.id);
+                        setEditingTitle(task.title);
+                      }}
+                      className="text-sm text-blue-600 hover:underline shrink-0"
+                    >
+                      Editar
+                    </button>
+
+                    {/* Botón para eliminar la tarea */}
+                    <button
+                      onClick={() => handleDelete(task.id)}
+                      className="text-sm text-red-500 hover:underline shrink-0"
+                    >
+                      Eliminar
+                    </button>
+                  </>
+                )}
+              </motion.li>
+            ))}
+          </ul>
+        </AnimatePresence>
+      )}
     </motion.div>
   );
 };
